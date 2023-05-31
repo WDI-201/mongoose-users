@@ -58,4 +58,52 @@ router.get("/user/:email", async (req, res) => {
 	}
 });
 
+//create a get route, find all users with the same name, use req.query
+
+router.get("/user-name", async (req, res) => {
+	try {
+		//http://localhost:3000/users/user-name?name=Ginny
+		const name = req.query.name;
+		const users = await User.find({ name: { $regex: new RegExp(name, "i") } });
+		if (!users)
+			return res
+				.status(400)
+				.json({ success: false, message: "No users with that name" });
+		res.status(200).json({ success: true, data: users });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ success: false, message: error.message });
+	}
+});
+
+router.put("/update-user/:id", async (req, res) => {
+	try {
+		const updateUser = await User.findOneAndUpdate(
+			{ _id: req.params.id },
+			req.body
+		);
+		if (!updateUser)
+			return res
+				.status(400)
+				.json({ success: false, message: "user not found" });
+		res.status(200).json({ success: true, data: updateUser });
+	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
+});
+
+// create a delete route, takes in id params and deletes one user based on the id.
+router.delete("/delete/:id", async (req, res) => {
+	try {
+		const deleteUser = await User.findByIdAndDelete({ _id: req.params.id });
+		if (!deleteUser)
+			return res
+				.status(400)
+				.json({ success: false, message: "user not deleted" });
+		res.status(200).json({ success: true, data: deleteUser });
+	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
+});
+
 module.exports = router;
