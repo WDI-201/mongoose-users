@@ -26,10 +26,34 @@ router.post("/new-user", async (req, res) => {
 			password: password,
 			phone: phone,
 		};
-		const newUser = await new User(user);
-		const saveUser = await newUser.save();
+		const newUser = await new User(user); // calls User model
+		// {
+		//     "_id": "cebf44ba-9ebb-4bcb-8f90-c8365ca98350",
+		//     "name": "Ginny",
+		//     "email": "gg@gmail.com",
+		//     "password": "helloWOrld",
+		//     "phone": 9171234567,
+		//     "createAt": "2023-05-31T14:37:59.165Z",
+		// }
+		const saveUser = await newUser.save(); // calls line 29 and save
 		res.status(200).json({ success: true, data: saveUser });
 	} catch (error) {
+		res.status(500).json({ success: false, message: error.message });
+	}
+});
+
+// create a get route, find by email using the findOne method, use req.params.
+router.get("/user/:email", async (req, res) => {
+	try {
+		const email = req.params.email;
+		const user = await User.findOne({ email: email });
+		if (!user)
+			return res
+				.status(400)
+				.json({ success: false, message: "User not found" });
+		res.status(200).json({ success: true, data: user });
+	} catch (error) {
+		console.log(error);
 		res.status(500).json({ success: false, message: error.message });
 	}
 });
