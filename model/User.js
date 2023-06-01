@@ -29,3 +29,4 @@ module.exports = User;
 //test postman:
 //omit name- what error does it give you?
 //use the same email- what error does it give you?
+//use phone number less than or greater than 10 digit to see error.
