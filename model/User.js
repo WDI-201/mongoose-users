@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
 		lowercase: true,
 		unique: true,
 	},
+	todos: [{ type: String, ref: "Todo" }],
 	password: { type: String, require: true, maxLength: 30 },
 	phone: { type: Number, min: 1000000000, max: 9999999999 },
 	createAt: { type: Date, default: Date.now },

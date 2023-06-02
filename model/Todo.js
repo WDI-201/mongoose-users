@@ -3,6 +3,7 @@ const { v4: uuid } = require("uuid");
 
 const toDoSchema = new mongoose.Schema({
 	_id: { type: String, default: () => uuid() },
+	owner: { type: String, ref: "user", required: true },
 	title: { type: String, required: true },
 	description: { type: String, required: true },
 	priority: {

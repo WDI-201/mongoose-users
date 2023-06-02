@@ -39,7 +39,7 @@ router.post("/new-user", async (req, res) => {
 router.get("/user/:email", async (req, res) => {
 	try {
 		const email = req.params.email;
-		const user = await User.findOne({ email: email });
+		const user = await User.findOne({ email: email }).populate("todos");
 		if (!user)
 			return res
 				.status(400)

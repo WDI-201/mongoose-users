@@ -1,9 +1,13 @@
 // client's request -> (server) apps.js -> router ./routes/todos.js-> controller todoController.js -> model (database)Todo.js-> controller todoController.js-> client response
 const Todo = require("../model/Todo");
+const User = require("../model/User");
 
 const getAllTodos = async (req, res) => {
 	try {
-		const todos = await Todo.find({});
+		const todos = await Todo.find({}).populate({
+			path: "owner",
+			select: "name",
+		});
 		res.status(200).json({ success: true, data: todos });
 	} catch (error) {
 		res.status(500).json({ success: false, message: error.message });
@@ -12,7 +16,13 @@ const getAllTodos = async (req, res) => {
 
 const createTodo = async (req, res) => {
 	try {
+		const { owner } = req.body;
 		const newTodo = await new Todo(req.body);
+		const updateUser = await User.findOneAndUpdate(
+			{ _id: owner },
+			{ $push: { todos: newTodo._id } }
+		);
+		await updateUser.save();
 		const saveTodo = await newTodo.save();
 		res.status(200).json({ success: true, data: saveTodo });
 	} catch (error) {
