@@ -18,6 +18,7 @@ const createTodo = async (req, res) => {
 	try {
 		const { owner } = req.body;
 		const newTodo = await new Todo(req.body);
+		// Once the new todo is created, you want to push the todo's id into the user's todos array (this can be used later to show which todos belong to a user)
 		const updateUser = await User.findOneAndUpdate(
 			{ _id: owner },
 			{ $push: { todos: newTodo._id } }
